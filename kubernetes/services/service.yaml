@@ -13,7 +13,7 @@ spec:
   - name: http
     port: 5000
     protocol: TCP
-    targetPort: webapp # one of the major thing w/o it you could not have active targets in Prometheus
+    targetPort: webapp 
   selector:
     component: backend
     instance: app
