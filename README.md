@@ -1,35 +1,37 @@
-Intro
--------
-The following project demonstrates a deployment of simple flask web app in kubernetes cluster and monitroing it with promethues and graphana.
+# Kubernetes monitoring with Prometheus+Grafana
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)![Kubernetes](https://img.shields.io/badge/kubernetes-%23326ce5.svg?style=for-the-badge&logo=kubernetes&logoColor=white)![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white)![Grafana](https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white)
 
 
+## Purpose
+Demonstrate a deployment of simple flask web app in kubernetes cluster and monitroing it with promethues and graphana.
 
-Steps
---------
+```console
+docker info
+```
 
-1.Install a local Kubernetes cluster on your computer
+
+##Steps
+
+1. Install a local Kubernetes cluster on your computer
     1.1. Install docker desktop
-    mac-https://docs.docker.com/desktop/install/mac-install/
-    windows - https://docs.docker.com/desktop/install/windows-install/
-    linux -https://docs.docker.com/desktop/install/linux-install/
+    [mac](https://docs.docker.com/desktop/install/mac-install/)
+    [windows](https://docs.docker.com/desktop/install/windows-install/)
+    [linux](https://docs.docker.com/desktop/install/linux-install/)
 
-    1.2
-    validate docker runs properly
-    docker info
+    1.2. Validate docker runs properly
+    `docker info`
 
-    1.3. Install minikube  local Kubernetes
-    https://minikube.sigs.k8s.io/docs/start/
-
-
-        1.3.1. Start your kluster
-        minkube start
+    1.3. [Install minikube  local Kubernetes](https://minikube.sigs.k8s.io/docs/start/)
         
-        1.3.2. Validate install:
-        minikube kubectl version
-        Flag --short has been deprecated, and will be removed in the future. The --short output will become the default.
-        Client Version: v1.25.2
-        Kustomize Version: v4.5.7
-        Server Version: v1.25.2
+      1.3.1. Start your kluster
+      `minkube start`
+
+      1.3.2. Validate install:
+      minikube kubectl version
+      Flag --short has been deprecated, and will be removed in the future. The --short output will become the default.
+      Client Version: v1.25.2
+      Kustomize Version: v4.5.7
+      Server Version: v1.25.2
 
         1.3.3 validate node
         minikube kubectl -- get nodes 
@@ -151,6 +153,9 @@ docker-compose push python_flask_serv
 We w
 https://docs.github.com/en/get-started/importing-your-projects-to-github/importing-source-code-to-github/adding-locally-hosted-code-to-github#adding-a-local-repository-to-github-using-git
 
+
+
+
 6.Set up monitoring for the application using Prometheus and Grafana.
 
 6.1. Deploy Prometheus and Grafana into our Minikube cluster using their provided Helm charts.
@@ -159,6 +164,7 @@ https://docs.github.com/en/get-started/importing-your-projects-to-github/importi
 https://helm.sh/docs/intro/install/
 
 6.1.2. valitate it works with helm version
+
 
 6.2.1 Install Prometheus
 
@@ -389,15 +395,7 @@ minikube kubectl -- apply -f service.yaml
 service/example-service created
 
 7.4.4
-In another window, start the tunnel to create a routable IP for the ‘balanced’ deployment:
-minikube tunnel
-
-7.4.5. Check the extrenl IP of the service
-minikube kubectl -- get svc 
-
-In our case it's localhost (127.0.0.1)
-NAME                                  TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
-example-service                       LoadBalancer   10.109.205.76    127.0.0.1     80:31219/TCP   14m
+kubectl port-forward pods/webapp-587854d5fd-5wqwv 5000:5000 -n default
 
 Open a web borwser and login to that IP --> you should see have the hello wold app
 

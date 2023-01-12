@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: webapp-super
+  labels:
+    component: backend
+    instance: app
+    name: containers-my-app
+    # release: kube-prometheus-stack # You need to verify what is your realease name pf prometheus
+  namespace: default # choose in what name space your prometheus is 
+spec:
+  namespaceSelector:
+    matchNames:
+    - default
+  selector:
+    matchLabels:
+      component: backend
+      instance: app
+      name: containers-my-app
+  endpoints:
+  - port: http
+  - path: /metrics

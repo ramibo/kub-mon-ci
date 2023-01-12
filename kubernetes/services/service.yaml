@@ -1,15 +1,20 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: example-service
+  name: webapp
   labels:
-    app: example-app
+    component: backend
+    instance: app
+    name: containers-my-app
+  namespace: default
 spec:
-  type: LoadBalancer
-  selector:
-    app: example-app
+  type: ClusterIP
   ports:
-    - protocol: TCP
-      name: http
-      port: 80
-      targetPort: 5000
+  - name: http
+    port: 5000
+    protocol: TCP
+    targetPort: webapp # one of the major thing w/o it you could not have active targets in Prometheus
+  selector:
+    component: backend
+    instance: app
+    name: containers-my-app
