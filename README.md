@@ -8,28 +8,28 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
 ## Steps
 
 1. Install a local Kubernetes cluster on your computer.
-    1.1 Install docker desktop according to your operation system: 
-    [mac](https://docs.docker.com/desktop/install/mac-install/)
-    [windows](https://docs.docker.com/desktop/install/windows-install/)
-    [linux](https://docs.docker.com/desktop/install/linux-install/)
-    <br>
-    1.2. Validate docker runs properly
-    `docker info`
-    <br/>
-    1.3. [Install minikube  local Kubernetes](https://minikube.sigs.k8s.io/docs/start/)
-    <br/>
-    1.4. Start your cluster
-    `minkube start`
-    <br/>
-    1.5. Validate install :
-    `minikube kubectl version`
+2. Install docker desktop according to your operation system: 
+[mac](https://docs.docker.com/desktop/install/mac-install/)
+[windows](https://docs.docker.com/desktop/install/windows-install/)
+[linux](https://docs.docker.com/desktop/install/linux-install/)
+<br>
+3. Validate docker runs properly
+`docker info`
+<br/>
+4. [Install minikube local Kubernetes](https://minikube.sigs.k8s.io/docs/start/)
+<br/>
+5. Start your cluster
+`minkube start`
+<br/>
+6. Validate install :
+`minikube kubectl version`
 
-    1.6. Validate node : 
-    ```shell
-    minikube kubectl -- get nodes 
-    NAME       STATUS   ROLES           AGE   VERSION
-    minikube   Ready    control-plane   18m   v1.25.3
-    ```
+7. Validate node : 
+```shell
+minikube kubectl -- get nodes 
+NAME       STATUS   ROLES           AGE   VERSION
+minikube   Ready    control-plane   18m   v1.25.3
+```
 
 2. Create a simple "Hello World" web application with Python and Flask.
   2.1. [Install python and pip](https://www.python.org/downloads/)
