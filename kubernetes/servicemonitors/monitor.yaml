@@ -6,7 +6,7 @@ metadata:
     component: backend
     instance: app
     name: containers-my-app
-    # release: kube-prometheus-stack # You need to verify what is your realease name pf prometheus
+    release: prometheus # You need to verify what is your realease name pf prometheus
   namespace: default # choose in what name space your prometheus is 
 spec:
   namespaceSelector:

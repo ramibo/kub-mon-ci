@@ -21,7 +21,7 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
     1.3. [Install minikube  local Kubernetes](https://minikube.sigs.k8s.io/docs/start/)
 
     1.4. Start your cluster
-    `minkube start`
+    `minikube start`
 
     1.5. Validate install :
     `minikube kubectl version`
