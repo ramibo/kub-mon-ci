@@ -335,6 +335,9 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
       component: backend
       instance: app
       name: containers-my-app
+  
+  # deploy the yaml file
+  minikube kubectl -- apply -f service.yaml 
 
   # create monitor.yaml
   cd ..
@@ -351,7 +354,8 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
       component: backend
       instance: app
       name: containers-my-app
-    namespace: default
+      release: prometheus # You need to verify what is your realease name of prometheus
+    namespace: default # choose in what name space your prometheus is
   spec:
     type: ClusterIP
     ports:
@@ -363,6 +367,9 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
       component: backend
       instance: app
       name: containers-my-app
+
+    # deploy the yaml file
+    minikube kubectl -- apply -f monitor.yaml 
   ```
   7.5. Get the web app pod :
     
