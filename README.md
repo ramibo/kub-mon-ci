@@ -86,6 +86,7 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
       ``` 
 
 3. Containerize the application using Docker.
+
     3.1. Go back to your root folder and create docker files : 
     ```shell
       cd ..
@@ -124,6 +125,7 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
     ```
 
 4. Build and push the Docker image to a registry: 
+
     4.1. Build the docker image
 
     `docker-compose build python_flask_serv`  
@@ -140,6 +142,7 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
     [Instructions](https://docs.github.com/en/get-started/importing-your-projects-to-github/importing-source-code-to-github/adding-locally-hosted-code-to-github#adding-a-local-repository-to-github-using-git)
 
 6. Set up monitoring for the application using Prometheus and Grafana.
+
     6.1. Install helm :
 
     https://helm.sh/docs/intro/install/
