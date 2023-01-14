@@ -153,14 +153,14 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
     `helm version`
 
     6.3. Install Prometheus - Add the Prometheus charts repository to our helm configuration:
-    
+
     `minikube kubectl -- create namespace prometheus-monitoring`
 
-    `helm repo add prometheus-community https://prometheus-community.github.io/helm-charts -n prometheus-monitoring`
+    `helm repo add prometheus-community https://prometheus-community.github.io/helm-charts`
 
     6.4. Set Prometheus Operator :
 
-    `helm install prometheus prometheus-community/kube-prometheus-stack`
+    `helm install prometheus prometheus-community/kube-prometheus-stack -n prometheus-monitoring`
     
     ```shell
     minikube kubectl -- get deployment 
@@ -172,42 +172,42 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
     
     6.5. Access prometheus UI
     ```shell
-    minikube kubectl -- get pod
+    minikube kubectl -- get pod -n prometheus-monitoring
     For prometheus-kube-prometheus-prometheus-0 we will run a port forwarding
 
     #Find the port to forawrd
-    minikube kubectl -- logs prometheus-prometheus-kube-prometheus-prometheus-0 |grep 'Listening on'
+    minikube kubectl -- logs prometheus-prometheus-kube-prometheus-prometheus-0 -n prometheus-monitoring |grep 'Listening on'
     #Output
     ts=2023-01-12T13:31:37.432Z caller=tls_config.go:232 level=info component=web msg="Listening on" address=[::]:9090
 
     #Forward the port
-    minikube kubectl -- port-forward service/prometheus-kube-prometheus-prometheus 9090
+    minikube kubectl -- port-forward service/prometheus-kube-prometheus-prometheus 9090 -n prometheus-monitoring
     ```
 
     6.6. Access Grafana UI.
 
-    `minikube kubectl -- get pod`
+    `minikube kubectl -- get pod -n prometheus-monitoring`
 
     For prometheus-grafana-* we will run a port forwarding
 
     ```shell
     #Find the port to forawrd:
-    minikube kubectl -- logs prometheus-grafana-6485fd848-gp9qz -c grafana |grep 'HTTP Server Listen' 
+    minikube kubectl -- logs prometheus-grafana-6485fd848-gp9qz -c grafana -n prometheus-monitoring |grep 'HTTP Server Listen' 
     #output
     logger=http.server t=2023-01-12T13:29:44.467505971Z level=info msg="HTTP Server Listen" address=[::]:3000 protocol=http subUrl= socket=
 
     #Find the Default user
-    minikube kubectl -- logs prometheus-grafana-6485fd848-gp9qz -c grafana |grep 'Created default admin'
+    minikube kubectl -- logs prometheus-grafana-6485fd848-gp9qz -c grafana -n prometheus-monitoring |grep 'Created default admin'
     # output
     logger=sqlstore t=2023-01-12T13:29:44.297042721Z level=info msg="Created default admin" user=admin
 
     #Password:
-    minikube kubectl -- get secret --namespace default prometheus-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+    minikube kubectl -- get secret --namespace default prometheus-grafana -o jsonpath="{.data.admin-password}" -n prometheus-monitoring | base64 --decode ; echo
     #output
     prom-operator
 
     #Forward the port:
-    minikube kubectl -- port-forward deployment/prometheus-grafana 3000
+    minikube kubectl -- port-forward deployment/prometheus-grafana 3000 -n prometheus-monitoring
     ```
 
 7. **Configure the monitoring tool to collect and display metrics about the application's performance and resource usage.** 
@@ -285,7 +285,7 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
         component: backend
         instance: app
         name: containers-my-app
-      namespace: default
+      namespace: my-app
     spec:
       selector:
         matchLabels:
@@ -335,7 +335,7 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
         component: backend
         instance: app
         name: containers-my-app
-      namespace: default
+      namespace: my-app
     spec:
       type: ClusterIP
       ports:
@@ -358,33 +358,37 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
     touch monitor.yaml
 
     # with your editor add the following code to monitor.yaml:
-    apiVersion: v1
-    kind: Service
+    apiVersion: monitoring.coreos.com/v1
+    kind: ServiceMonitor
     metadata:
-      name: webapp
+      name: webapp-super
       labels:
         component: backend
         instance: app
         name: containers-my-app
-        release: prometheus # You need to verify what is your realease name of prometheus
-      namespace: default # choose in what name space your prometheus is
+        release: prometheus # You need to verify what is your realease name pf prometheus
+      namespace: prometheus-monitoring # choose in what name space your prometheus is 
     spec:
-      type: ClusterIP
-      ports:
-      - name: http
-        port: 5000
-        protocol: TCP
-        targetPort: webapp 
+      namespaceSelector:
+        matchNames:
+        - default
+        - my-app
       selector:
-        component: backend
-        instance: app
-        name: containers-my-app
+        matchLabels:
+          component: backend
+          instance: app
+          name: containers-my-app
+      endpoints:
+      - port: http # http - is a port name which was put in service.yaml
+      - path: /metrics
 
       # deploy the yaml file
       minikube kubectl -- apply -f monitor.yaml 
     ```
+    In you promethus UI you should see the following under Targets:
+    ![prom-targets](/images/prom-targets.jpg)
     7.5. Get the web app service :
-      
+    
     `minikube kubectl -- get service --all-namespaces`
 
     For webapp we will run a port forwarding
