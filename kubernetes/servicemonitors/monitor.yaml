@@ -7,16 +7,17 @@ metadata:
     instance: app
     name: containers-my-app
     release: prometheus # You need to verify what is your realease name pf prometheus
-  namespace: default # choose in what name space your prometheus is 
+  namespace: prometheus-monitoring # choose in what name space your prometheus is 
 spec:
   namespaceSelector:
     matchNames:
     - default
+    - my-app
   selector:
     matchLabels:
       component: backend
       instance: app
       name: containers-my-app
   endpoints:
-  - port: http
+  - port: http # http - is a port name which was put in service.yaml
   - path: /metrics

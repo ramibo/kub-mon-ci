@@ -6,7 +6,7 @@ metadata:
     component: backend
     instance: app
     name: containers-my-app
-  namespace: default
+  namespace: my-app
 spec:
   selector:
     matchLabels:

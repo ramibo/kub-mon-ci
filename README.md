@@ -150,8 +150,8 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
   `helm version`
 
   6.3. Install Prometheus - Add the Prometheus charts repository to our helm configuration:
-
-  `helm repo add prometheus-community https://prometheus-community.github.io/helm-charts`
+  `minikube kubectl -- create namespace prometheus-monitoring`
+  `helm repo add prometheus-community https://prometheus-community.github.io/helm-charts -n prometheus-monitoring`
 
   6.4. Set Prometheus Operator :
 
@@ -165,7 +165,21 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
   prometheus-kube-state-metrics         1/1     1            1           36m
   ```
   
-  6.5. Access Grafana UI.
+  6.5. Access prometheus UI
+  ```shell
+  minikube kubectl -- get pod
+  For prometheus-kube-prometheus-prometheus-0 we will run a port forwarding
+
+  #Find the port to forawrd
+  minikube kubectl -- logs prometheus-prometheus-kube-prometheus-prometheus-0 |grep 'Listening on'
+  #Output
+  ts=2023-01-12T13:31:37.432Z caller=tls_config.go:232 level=info component=web msg="Listening on" address=[::]:9090
+
+  #Forward the port
+  minikube kubectl -- port-forward service/prometheus-kube-prometheus-prometheus 9090
+  ```
+
+  6.6. Access Grafana UI.
 
   `minikube kubectl -- get pod`
 
@@ -190,19 +204,7 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
   #Forward the port:
   minikube kubectl -- port-forward deployment/prometheus-grafana 3000
   ```
-  6.6. Access prometheus UI
-  ```shell
-  minikube kubectl -- get pod
-  For prometheus-kube-prometheus-prometheus-0 we will run a port forwarding
 
-  #Find the port to forawrd
-  minikube kubectl -- logs prometheus-prometheus-kube-prometheus-prometheus-0 |grep 'Listening on'
-  #Output
-  ts=2023-01-12T13:31:37.432Z caller=tls_config.go:232 level=info component=web msg="Listening on" address=[::]:9090
-
-  #Forward the port
-  minikube kubectl -- port-forward service/prometheus-kube-prometheus-prometheus 9090
-  ```
   7. Configure the monitoring tool to collect and display metrics about the application's performance and resource usage. 
 
   7.1. Edit the following files in the /src folder 
@@ -257,6 +259,11 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
 
   7.4 Deploy the application to your Kubernetes cluster
   ```shell
+
+  #create a namespace for the application
+  minikube kubectl -- create namespace my-app 
+ 
+  #create directories
   mkdir kubernetes
   cd kubernetes
   mkdir deployments
@@ -371,12 +378,12 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
     # deploy the yaml file
     minikube kubectl -- apply -f monitor.yaml 
   ```
-  7.5. Get the web app pod :
+  7.5. Get the web app service :
     
-  `minikube kubectl -- get pod`
+  `minikube kubectl -- get service --all-namespaces`
 
-  For webapp-* we will run a port forwarding
+  For webapp we will run a port forwarding
   
-  `kubectl port-forward pods/webapp-6b8dd6d544-687r9 5000:5000 -n default`
+  `minikube kubectl -- port-forward service/webapp 5000 -n my-app`
 
-  Open a web borwser and login to `localhost:5000` --> you should see have the hello wold app.
+  Open a web borwser and login to `localhost:5000` --> you should see have the hello world app.
