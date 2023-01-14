@@ -7,7 +7,7 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
 
 ## Steps
 
-**1. Install a local Kubernetes cluster on your computer :** 
+1. Install a local Kubernetes cluster on your computer : 
 
     1.1. Install docker desktop according to your operation system: 
     [mac](https://docs.docker.com/desktop/install/mac-install/)
@@ -33,7 +33,7 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
     minikube   Ready    control-plane   18m   v1.25.3
     ```
 
-**2. Create a simple "Hello World" web application with Python and Flask :**
+2. Create a simple "Hello World" web application with Python and Flask :
 
     2.1. [Install python and pip](https://www.python.org/downloads/)
 
@@ -85,7 +85,7 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
       deactivate
       ``` 
 
-**3. Containerize the application using Docker.**
+3. Containerize the application using Docker.
 
     3.1. Go back to your root folder and create docker files : 
     ```shell
@@ -124,7 +124,7 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
             - 5000:5000
     ```
 
-**4. Build and push the Docker image to a registry:** 
+4. Build and push the Docker image to a registry: 
 
     4.1. Build the docker image
 
@@ -138,10 +138,10 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
 
     `docker-compose push python_flask_serv`
 
-**5. Set up a version control system (e.g. Git) and host the code for the application in a repository**
+5. Set up a version control system (e.g. Git) and host the code for the application in a repository
     [Instructions](https://docs.github.com/en/get-started/importing-your-projects-to-github/importing-source-code-to-github/adding-locally-hosted-code-to-github#adding-a-local-repository-to-github-using-git)
 
-**6. Set up monitoring for the application using Prometheus and Grafana.**
+6. Set up monitoring for the application using Prometheus and Grafana.
 
     6.1. Install helm :
 
@@ -207,7 +207,7 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
     minikube kubectl -- port-forward deployment/prometheus-grafana 3000
     ```
 
-**7. Configure the monitoring tool to collect and display metrics about the application's performance and resource usage.** 
+7. Configure the monitoring tool to collect and display metrics about the application's performance and resource usage. 
 
     7.1. Edit the following files in the /src folder 
 
