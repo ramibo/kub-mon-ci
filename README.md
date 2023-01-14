@@ -139,6 +139,7 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
     `docker-compose push python_flask_serv`
 
 5. **Set up a version control system (e.g. Git) and host the code for the application in a repository**
+
     [Instructions](https://docs.github.com/en/get-started/importing-your-projects-to-github/importing-source-code-to-github/adding-locally-hosted-code-to-github#adding-a-local-repository-to-github-using-git)
 
 6. **Set up monitoring for the application using Prometheus and Grafana.**
