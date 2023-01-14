@@ -3,7 +3,7 @@
 
 
 ## Purpose
-Demonstrate a deployment of simple flask web app in kubernetes cluster and monitroing it with Promethues and Grafana.
+Demonstrate a deployment of a simple flask web app in kubernetes cluster and monitroing it with Promethues and Grafana.
 
 ## Steps
 
@@ -396,3 +396,13 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
     `minikube kubectl -- port-forward service/webapp 5000 -n my-app`
 
     Open a web borwser and login to `localhost:5000` --> you should see have the hello world app.
+
+    7.6. To create Dashboard in Grafana take the following steps:
+      - Access Grafna UI on port 3000 ( see step 6.6) 
+      - Open the sidebar menu and selct Dashboards --> New Dashboard --> Add a new panel.
+      - In the Edit Panel page set the follwong :
+        Data source : Promethues
+        Metric: we will use "python_request_operations_total" ( you can find more at localhost:5000/metrics ).
+      - Click on "Run queries" and Save. Here is an example :
+        ![panels](/images/panels.jpg)
+
