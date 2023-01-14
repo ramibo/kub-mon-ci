@@ -153,8 +153,9 @@ Demonstrate a deployment of simple flask web app in kubernetes cluster and monit
     `helm version`
 
     6.3. Install Prometheus - Add the Prometheus charts repository to our helm configuration:
-    `minikube kubectl -- create namespace prometheus-monitoring`
     
+    `minikube kubectl -- create namespace prometheus-monitoring`
+
     `helm repo add prometheus-community https://prometheus-community.github.io/helm-charts -n prometheus-monitoring`
 
     6.4. Set Prometheus Operator :
