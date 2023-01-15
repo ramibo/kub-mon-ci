@@ -26,20 +26,35 @@ jobs:
   push-to-dockerhub:
     needs: [build-and-test]
     runs-on: ubuntu-latest
+    env:
+      DOCKER_USER: ${{secrets.DOCKERHUB_USERNAME}}
+      DOCKER_PASSWORD: ${{secrets.DOCKERHUB_TOKEN}}
+      REPO_NAME: ${{secrets.DOCKERHUB_USERNAME}}
     steps:
-      - name: Download repository
-        uses: actions/download-artifact@v2
-        with:
-          name: repository
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push image
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          file: ./Dockerfile
-          tags: python_flask_img:1.0.0
-          # build-args: VER=${{ needs.setup.outputs.tag }}
+    - uses: actions/checkout@v2 # first action : checkout source code
+    - name: docker login
+      run: | # log into docker hub account
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD  
+    - name: Get current date # get the date of the build
+      id: date
+      run: echo "::set-output name=date::$(date +'%Y-%m-%d--%M-%S')"
+    - name: Build the Docker image # push The image to the docker hub
+      run: docker build . --file Dockerfile --tag $DOCKER_USER/$REPO_NAME:${{ steps.date.outputs.date }}
+    - name: Docker Push
+      run: docker push $DOCKER_USER/$REPO_NAME:${{ steps.date.outputs.date }}
+      # - name: Download repository
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: repository
+      # - name: Login to DockerHub
+      #   uses: docker/login-action@v1
+      #   with:
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # - name: Build and push image
+      #   uses: docker/build-push-action@v3
+      #   with:
+      #     push: true
+      #     file: ./Dockerfile
+      #     tags: python_flask_img:1.0.0
+      #     # build-args: VER=${{ needs.setup.outputs.tag }}
