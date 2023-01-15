@@ -23,7 +23,7 @@ spec:
       containers:
       - name: app
         image: rammatz/python_flask_img:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
           name: webapp
