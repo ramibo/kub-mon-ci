@@ -1,9 +1,9 @@
 # Kubernetes monitoring with Prometheus+Grafana
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)![Kubernetes](https://img.shields.io/badge/kubernetes-%23326ce5.svg?style=for-the-badge&logo=kubernetes&logoColor=white)![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white)![Grafana](https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)![Kubernetes](https://img.shields.io/badge/kubernetes-%23326ce5.svg?style=for-the-badge&logo=kubernetes&logoColor=white)![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white)![Grafana](https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white)![GHACTIONS](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
 
 
 ## Purpose
-Demonstrate a deployment of a simple flask web app in kubernetes cluster and monitroing it with Promethues and Grafana.
+Demonstrate a deployment of a simple flask web app in kubernetes cluster and monitroing it with Promethues and Grafana and continues deployment with Github Actions.
 
 ## Steps
 
@@ -54,7 +54,7 @@ Demonstrate a deployment of a simple flask web app in kubernetes cluster and mon
 
     @app.route("/")
     def hello():
-        return "Hello from Python!"
+        return "Hello from Python!!"
 
     if __name__ == "__main__":
         app.run(host='0.0.0.0')
@@ -416,7 +416,7 @@ Demonstrate a deployment of a simple flask web app in kubernetes cluster and mon
 
 Bonus section:
 
-  1.  Set up a build pipeline using a CI/CD tool.
+  1.  **Set up a build pipeline using a CI/CD tool.**
 
       1.a. Configure the pipeline to automatically build and test the application whenever code is pushed to the repository. 
       
@@ -495,4 +495,81 @@ Bonus section:
             
           - The ngrok UI will output an HTTPS address that points directly to your minikube‘s API port. You can now use that URL to run kubectl commands against.
           ![ngrok](/images/ngrok.jpg)
+          <br>
+          - Add the following to the end of ci.yml (In the repo it's commneted as requires addtional step for KUBE_CONFIG. Uncommnet to enable )
+            ```shell
+              deploy-to-k8s-cluster:
+                needs: [build-and-test,push-to-dockerhub]
+                runs-on: ubuntu-latest
+                steps:
+                - uses: actions/checkout@v3
+                - name: Start minikube
+                  uses: medyagh/setup-minikube@master
+                - name: Create kube config
+                  run: |
+                    mkdir -p $HOME/.kube/
+                    echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+                    chmod 600 $HOME/.kube/config
+                - name: Try the cluster
+                  run: minikube kubectl -- get pods -A
+                - name: Apply the deployment YAML
+                  run: minikube kubectl -- apply -f kubernetes/deployments/deployment.yaml
+            ```
 
+          - Create a modified copy of your local kube config.
+            ```shell
+            $ kubectl config view --flatten > ~/Desktop/kube_config
+              Remove `certificate-authority-data` line
+              Add `insecure-skip-tls-verify: true` line
+              Replace `server` value to `https://117b-2a02-c7f-e84f-c900-85c1-38ee-a128-9cec.ngrok.io`
+              ```
+              Finally it should look like something like below : 
+
+              ```shell
+              apiVersion: v1
+              clusters:
+              - cluster:
+                  insecure-skip-tls-verify: true
+                  server: https://117b-2a02-c7f-e84f-c900-85c1-38ee-a128-9cec.ngrok.io
+                name: nonprod
+              - cluster:
+                  insecure-skip-tls-verify: true
+                  server: https://117b-2a02-c7f-e84f-c900-85c1-38ee-a128-9cec.ngrok.io
+                name: prod
+              contexts:
+              - context:
+                  cluster: nonprod
+                  user: nonprod
+                name: nonprod
+              - context:
+                  cluster: prod
+                  user: prod
+                name: prod
+              current-context: nonprod
+              kind: Config
+              preferences: {}
+              users:
+              - name: nonprod
+                user:
+                  client-certificate-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0F...==
+                  client-key-data: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVp...=
+              - name: prod
+                user:
+                  client-certificate-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0F...==
+                  client-key-data: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVk...=
+              ```
+              
+              
+          
+          - Copy this content into `KUBE_CONFIG` GitHub secret.
+          - Commit your code.
+
+  2. **What additional steps or considerations would be necessary to make this setup production-grade**
+
+      1. Deploy each componnet (app / prometheus / grafana) on a sperate node in the cluster. 
+      Or , on a seprate node in a seprate cluster.
+      In addtiion , devide to dev / stage / prod environments.
+
+      2. Deploymnet should be on a cloud environemnt ( e.g ec2 / Azure ) instead on a local host with ngrok.
+
+      3. For CI in Github - add security application( SCA / SAST) which can integrate with the repositry and open issues / alert on sequrity.
