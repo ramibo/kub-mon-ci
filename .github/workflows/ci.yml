@@ -29,13 +29,14 @@ jobs:
       DOCKER_USER: ${{secrets.DOCKERHUB_USERNAME}}
       DOCKER_PASSWORD: ${{secrets.DOCKERHUB_TOKEN}}
       REPO_NAME: python_flask_img
+      COMMIT_ID: ${{ github.sha }}
     steps:
     - uses: actions/checkout@v2 # first action : checkout source code
     - name: docker login
       run: | # log into docker hub account
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD  
     - name: Build the Docker image # push The image to the docker hub
-      run: docker build . --file Dockerfile --tag $DOCKER_USER/$REPO_NAME:latest
+      run: docker build . --file Dockerfile --tag $DOCKER_USER/$REPO_NAME:$COMMIT_ID
     - name: Docker Push
       run: docker push $DOCKER_USER/$REPO_NAME:latest
   
@@ -55,7 +56,7 @@ jobs:
       run: minikube kubectl -- get pods -A
     - name: Apply the deployment YAML
       run: minikube kubectl -- apply -f kubernetes/deployments/deployment.yaml
-    - name: Apply the service YAML
-      run: minikube kubectl -- apply -f kubernetes/services/service.yaml
-    - name: Apply the monitor YAML
-      run: minikube kubectl -- apply -f kubernetes/servicemonitors/monitor.yaml
+    # - name: Apply the service YAML
+    #   run: minikube kubectl -- apply -f kubernetes/services/service.yaml
+    # - name: Apply the monitor YAML
+    #   run: minikube kubectl -- apply -f kubernetes/servicemonitors/monitor.yaml
