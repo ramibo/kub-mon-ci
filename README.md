@@ -414,3 +414,6 @@ Demonstrate a deployment of a simple flask web app in kubernetes cluster and mon
       - Click on "Run queries" and Save. Here is an example :
         ![panels](/images/panels.jpg)
 
+Bonus section:
+
+  
