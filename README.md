@@ -120,7 +120,7 @@ Demonstrate a deployment of a simple flask web app in kubernetes cluster and mon
           build:
             context: .
           container_name: python_flask_con
-          image: <your_docker_repo_name>/python_flask_img:1.0.0
+          image: <your_docker_repo_name>/python_flask_img:latest
           ports:
             - 5000:5000
     ```
@@ -309,7 +309,7 @@ Demonstrate a deployment of a simple flask web app in kubernetes cluster and mon
         spec:
           containers:
           - name: app
-            image: <your_docker_repo_name>/python_flask_img:1.0.0
+            image: <your_docker_repo_name>/python_flask_img:latest
             imagePullPolicy: IfNotPresent
             ports:
             - containerPort: 5000
