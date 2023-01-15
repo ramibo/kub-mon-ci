@@ -39,4 +39,4 @@ jobs:
     - name: Docker Push
       run: docker push $DOCKER_USER/$REPO_NAME:latest
   
-  deploy-to-k8s-cluster
+  # deploy-to-k8s-cluster
