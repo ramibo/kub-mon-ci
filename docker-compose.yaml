@@ -4,6 +4,6 @@ services:
     build:
       context: .
     container_name: python_flask_con
-    image: rammatz/python_flask_img:1.0.0
+    image: rammatz/python_flask_img:latest
     ports:
       - 5000:5000
