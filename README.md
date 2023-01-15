@@ -415,5 +415,8 @@ Demonstrate a deployment of a simple flask web app in kubernetes cluster and mon
         ![panels](/images/panels.jpg)
 
 Bonus section:
+    1.  Set up a build pipeline using a CI/CD tool 
 
-  
+       1.1.dsfd
+
+       1.2. 
