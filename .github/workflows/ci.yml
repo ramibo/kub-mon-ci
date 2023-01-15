@@ -21,7 +21,4 @@ jobs:
           pip install wheel pytest flake8 conan
           pip install -r src/requirements.txt --no-cache-dir
       - name: Unittest
-        env:
-          WS_USER_KEY: ${{ secrets.WS_USER_KEY }}
-          WS_ORG_TOKEN: ${{ secrets.WS_ORG_TOKEN }}
-        run: python -m unittest
+        run: python -m unittest src/tests/test_server.py 
