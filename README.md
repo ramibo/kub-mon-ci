@@ -480,11 +480,7 @@ Bonus section:
         ```
 
       1.b. Configure the pipeline to automatically deploy the application to the Kubernetes cluster whenever a new version is built and tested successfully. 
-        <!-- -Install jenkins from helm
-        -minikube kubectl -- create namespace jenkins-namespace
-        -helm repo add jenkins https://charts.jenkins.io
-        -helm repo update
-        -helm upgrade --install myjenkins jenkins/jenkins -n jenkins-namespace -->
+
         - Expoe the Kubernetes API to the internet :
 
           - Download [ngrok](https://ngrok.com/download)
