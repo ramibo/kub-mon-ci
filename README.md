@@ -415,8 +415,64 @@ Demonstrate a deployment of a simple flask web app in kubernetes cluster and mon
         ![panels](/images/panels.jpg)
 
 Bonus section:
-    1.  Set up a build pipeline using a CI/CD tool 
 
-       1.1.dsfd
+  1.  Set up a build pipeline using a CI/CD tool.
 
-       1.2. 
+      1.a. Configure the pipeline to automatically build and test the application whenever code is pushed to the repository. 
+      
+      Create the following folders and files in your root folder:
+
+      ```shell
+      mkdir .github
+      cd .github
+      mkdir workflows
+      touch ci.yml
+      ```
+      
+      With your editor add the following code to :
+    
+      ```shell
+      name: CI
+      on:
+        push:
+          branches:
+            - '**'
+      jobs:
+        build-and-test:
+          runs-on: ubuntu-latest
+          strategy:
+            matrix:
+              python-version: ['3.10']
+          steps:
+            - uses: actions/checkout@v3
+            - name: Set up Python ${{ matrix.python-version }}
+              uses: actions/setup-python@v4
+              with:
+                python-version: ${{ matrix.python-version }}
+            - name: Install dependencies
+              run: |
+                python -m pip install --upgrade pip
+                pip install wheel pytest flake8 conan
+                pip install -r src/requirements.txt --no-cache-dir
+            - name: Unittest
+              run: python -m unittest src/tests/test_server.py
+
+        push-to-dockerhub:
+          needs: [build-and-test]
+          runs-on: ubuntu-latest
+          env:
+            DOCKER_USER: ${{secrets.DOCKERHUB_USERNAME}}
+            DOCKER_PASSWORD: ${{secrets.DOCKERHUB_TOKEN}}
+            REPO_NAME: python_flask_img
+          steps:
+          - uses: actions/checkout@v2 # first action : checkout source code
+          - name: docker login
+            run: | # log into docker hub account
+              docker login -u $DOCKER_USER -p $DOCKER_PASSWORD  
+          - name: Build the Docker image # push The image to the docker hub
+            run: docker build . --file Dockerfile --tag $DOCKER_USER/$REPO_NAME:latest
+          - name: Docker Push
+            run: docker push $DOCKER_USER/$REPO_NAME:latest
+      ```
+
+       1.b. 
