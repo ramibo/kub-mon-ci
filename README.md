@@ -98,9 +98,10 @@ Demonstrate a deployment of a simple flask web app in kubernetes cluster and mon
       ```shell
       #Dockerfile:
       -----------
-      FROM python:3.10.9-alpine3.17
+      FROM python:3.10.9-slim-buster
 
       RUN mkdir -p /app
+      RUN apt-get update -y && apt-get install -y gcc
       WORKDIR /app
 
       COPY ./src/requirements.txt /app/requirements.txt
@@ -222,14 +223,17 @@ Demonstrate a deployment of a simple flask web app in kubernetes cluster and mon
     from prometheus_client.core import CollectorRegistry
     from prometheus_client import Summary, Counter, Histogram, Gauge
     import time
+    import psutil
 
     app = Flask(__name__)
+    CONTENT_TYPE_LATEST = str('text/plain; version=0.0.4; charset=utf-8')
 
     _INF = float("inf")
 
     graphs = {}
     graphs['c'] = Counter('python_request_operations_total', 'The total number of processed requests')
     graphs['h'] = Histogram('python_request_duration_seconds', 'Histogram for the duration in seconds.', buckets=(1, 2, 5, 6, 10, _INF))
+    graphs['m'] = Gauge('system_usage','Hold current system resource usage',['resource_type'])
 
     @app.route("/")
     def hello():
@@ -239,6 +243,9 @@ Demonstrate a deployment of a simple flask web app in kubernetes cluster and mon
         time.sleep(0.600)
         end = time.time()
         graphs['h'].observe(end - start)
+        graphs['m'].labels('CPU').set(psutil.cpu_percent())
+        graphs['m'].labels('Memory').set(psutil.virtual_memory()[2])
+
         return "Hello World!"
 
     @app.route("/metrics")
@@ -256,6 +263,7 @@ Demonstrate a deployment of a simple flask web app in kubernetes cluster and mon
     #----------------
     Flask == 2.2.2
     prometheus_client == 0.15.0
+    psutil==5.9.4
     ``` 
         
     7.2.Build the docker image and Run the docker image container.See step 4.1-2
