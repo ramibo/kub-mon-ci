@@ -457,7 +457,6 @@ Bonus section:
               - name: Install dependencies
                 run: |
                   python -m pip install --upgrade pip
-                  pip install wheel pytest flake8 conan
                   pip install -r src/requirements.txt --no-cache-dir
               - name: Unittest
                 run: python -m unittest src/tests/test_server.py
