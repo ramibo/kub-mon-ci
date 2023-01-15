@@ -52,4 +52,9 @@ jobs:
         echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
         chmod 600 $HOME/.kube/config
     - name: Try the cluster
-      run: kubectl get pods -A
+      run: minikube kubectl -- get pods -A
+    - name: Apply the manifest files
+      run: |
+        minikube kubectl -- apply -f kubernetes/deployments/deployment.yaml
+        minikube kubectl -- apply -f kubernetes/services/service.yaml
+        minikube kubectl -- apply -f kubernetes/servicemonitors/monitor.yaml
