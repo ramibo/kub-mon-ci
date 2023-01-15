@@ -479,4 +479,24 @@ Bonus section:
               run: docker push $DOCKER_USER/$REPO_NAME:latest
         ```
 
-       1.b. 
+      1.b. Configure the pipeline to automatically deploy the application to the Kubernetes cluster whenever a new version is built and tested successfully. 
+        <!-- -Install jenkins from helm
+        -minikube kubectl -- create namespace jenkins-namespace
+        -helm repo add jenkins https://charts.jenkins.io
+        -helm repo update
+        -helm upgrade --install myjenkins jenkins/jenkins -n jenkins-namespace -->
+        - Expoe the Kubernetes API to the internet :
+
+          - Download [ngrok](https://ngrok.com/download)
+          - Use kube-proxy to proxy requests to the API from localhost:
+            ```shell
+            kubectl proxy --port=8001 --accept-hosts='.*\.ngrok.io'
+            ```
+          - In a new terminal, open an ngrok tunnel (port 8001 is the default Kubernetes API port):
+            ```shell
+            ngrok http 8001
+            ```
+            
+          - The ngrok UI will output an HTTPS address that points directly to your minikube‘s API port. You can now use that URL to run kubectl commands against.
+          ![ngrok](/images/ngrok.jpg)
+

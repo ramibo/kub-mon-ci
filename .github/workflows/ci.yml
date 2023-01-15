@@ -39,4 +39,17 @@ jobs:
     - name: Docker Push
       run: docker push $DOCKER_USER/$REPO_NAME:latest
   
-  # deploy-to-k8s-cluster
+  deploy-to-k8s-cluster:
+    needs: [build-and-test,push-to-dockerhub]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Start minikube
+      uses: medyagh/setup-minikube@master
+    - name: Create kube config
+      run: |
+        mkdir -p $HOME/.kube/
+        echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+        chmod 600 $HOME/.kube/config
+    - name: Try the cluster
+      run: kubectl get pods -A
