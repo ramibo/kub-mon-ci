@@ -14,7 +14,7 @@ class TestFlaskPrometheus(unittest.TestCase):
     def test_hello(self):
         response = self.app.get("/")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, b"Hello World!")
+        self.assertEqual(response.data, b"Hello World!!")
 
         c = Counter('python_request_operations_total', 'The total number of processed requests', registry=self.registry)
         c.inc()
