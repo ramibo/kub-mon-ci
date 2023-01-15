@@ -26,7 +26,7 @@ def hello():
     graphs['m'].labels('CPU').set(psutil.cpu_percent())
     graphs['m'].labels('Memory').set(psutil.virtual_memory()[2])
 
-    return "Hello World!"
+    return "Hello World!!"
 
 @app.route("/metrics")
 def requests_count():

@@ -53,8 +53,9 @@ jobs:
         chmod 600 $HOME/.kube/config
     - name: Try the cluster
       run: minikube kubectl -- get pods -A
-    - name: Apply the manifest files
-      run: |
-        minikube kubectl -- apply -f kubernetes/deployments/deployment.yaml
-      # minikube kubectl -- apply -f kubernetes/services/service.yaml
-      # minikube kubectl -- apply -f kubernetes/servicemonitors/monitor.yaml
+    - name: Apply the deployment YAML
+      run: minikube kubectl -- apply -f kubernetes/deployments/deployment.yaml
+    - name: Apply the service YAML
+      run: minikube kubectl -- apply -f kubernetes/services/service.yaml
+    - name: Apply the monitor YAML
+      run: minikube kubectl -- apply -f kubernetes/servicemonitors/monitor.yaml
